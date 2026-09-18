@@ -36,3 +36,15 @@ def create_sensor_reading(
     db.refresh(new_reading)
 
     return new_reading
+
+
+
+@router.get("/readings", response_model=list[SensorReadingResponse])
+def get_sensor_readings(db: Session = Depends(get_db)):
+    readings = (
+        db.query(SensorReading)
+        .order_by(SensorReading.timestamp.desc())
+        .all()
+    )
+
+    return readings
