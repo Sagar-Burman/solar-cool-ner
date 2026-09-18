@@ -1,40 +1,85 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import SensorCard from "./components/SensorCard";
+import TemperatureChart from "./components/TemperatureChart";
+
+import "./index.css";
+
 function App() {
   const [readings, setReadings] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/readings")
-      .then((response) => {
-        setReadings(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching sensor data:", error);
-      });
+    const fetchReadings = () => {
+      axios
+        .get("http://127.0.0.1:8000/api/readings")
+        .then((response) => {
+          setReadings(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching sensor data:", error);
+        });
+    };
+
+    fetchReadings();
+
+    const interval = setInterval(fetchReadings, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
+  const latestReading = readings[0];
+
   return (
-    <div>
-      <h1>SOLARCOOL NER</h1>
-      <p>Smart Decentralized Mini Cold Storage</p>
+    <div className="dashboard">
+      <header className="header">
+        <h1>SOLARCOOL NER</h1>
+        <p>Smart Decentralized Mini Cold Storage</p>
+      </header>
 
-      <h2>Sensor Readings</h2>
+      {latestReading && (
+        <>
+          <div className="room-info">
+            <h2>Cold Room: {latestReading.device_id}</h2>
 
-      {readings.map((reading) => (
-        <div key={reading.id}>
-          <p>Device: {reading.device_id}</p>
-          <p>Temperature: {reading.temperature} °C</p>
-          <p>Humidity: {reading.humidity} %</p>
-          <p>Battery: {reading.battery_level} %</p>
-          <p>Solar Power: {reading.solar_power} W</p>
-          <p>
-            Cooling: {reading.cooling_status ? "ON" : "OFF"}
-          </p>
-          <hr />
-        </div>
-      ))}
+            <span className="status">
+              ● SYSTEM ONLINE
+            </span>
+          </div>
+
+          <div className="sensor-grid">
+            <SensorCard
+              title="Temperature"
+              value={latestReading.temperature}
+              unit="°C"
+              icon="🌡️"
+            />
+
+            <SensorCard
+              title="Humidity"
+              value={latestReading.humidity}
+              unit="%"
+              icon="💧"
+            />
+
+            <SensorCard
+              title="Battery"
+              value={latestReading.battery_level}
+              unit="%"
+              icon="🔋"
+            />
+
+            <SensorCard
+              title="Solar Power"
+              value={latestReading.solar_power}
+              unit="W"
+              icon="☀️"
+            />
+          </div>
+
+          <TemperatureChart readings={readings} />
+        </>
+      )}
     </div>
   );
 }
