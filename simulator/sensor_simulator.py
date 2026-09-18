@@ -14,7 +14,7 @@ def generate_sensor_data():
         "humidity": round(random.uniform(65.0, 80.0), 2),
         "battery_level": round(random.uniform(70.0, 100.0), 2),
         "solar_power": round(random.uniform(300.0, 500.0), 2),
-        "cooling_status": True
+        "cooling_status": random.choice([True, False])
     }
 
 

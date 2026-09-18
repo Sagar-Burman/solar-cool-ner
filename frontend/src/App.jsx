@@ -103,6 +103,14 @@ function App() {
               unit="W"
               icon="☀️"
             />
+
+            <SensorCard
+  title="Cooling Status"
+  value={latestReading.cooling_status ? "ON" : "OFF"}
+  unit=""
+  icon="❄️"
+/>
+
           </div>
 
           <TemperatureChart readings={readings} />
