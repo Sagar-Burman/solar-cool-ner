@@ -29,6 +29,10 @@ function App() {
   }, []);
 
   const latestReading = readings[0];
+  const temperatureAlert = latestReading && latestReading.temperature > 10;
+  const humidityAlert = latestReading && latestReading.humidity > 80;
+  const batteryAlert = latestReading && latestReading.battery_level < 20;
+  const solarAlert = latestReading && latestReading.solar_power < 100;
 
   return (
     <div className="dashboard">
@@ -46,6 +50,30 @@ function App() {
               ● SYSTEM ONLINE
             </span>
           </div>
+
+{temperatureAlert && (
+  <div className="alert">
+    ⚠️ HIGH TEMPERATURE ALERT: Cold room temperature is above 10°C
+  </div>
+)}
+
+{humidityAlert && (
+  <div className="alert">
+    ⚠️ HIGH HUMIDITY ALERT: Cold room humidity is above 80%
+  </div>
+)}
+
+{batteryAlert && (
+  <div className="alert">
+    ⚠️ LOW BATTERY ALERT: Battery level is below 20%
+  </div>
+)}
+
+{solarAlert && (
+  <div className="alert">
+    ⚠️ LOW SOLAR POWER ALERT: Solar power is below 100 W
+  </div>
+)}
 
           <div className="sensor-grid">
             <SensorCard
